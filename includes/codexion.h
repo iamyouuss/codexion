@@ -7,7 +7,7 @@
 #include <string.h>
 
 typedef struct codexion {
-    int numbers_of_coders;
+    int number_of_coders;
     int time_to_burnout;
     int time_to_compile;
     int time_to_debug;
@@ -18,6 +18,7 @@ typedef struct codexion {
 } codexion_t;
 
 int parsing(char **args);
-int	isnumeric(int c);
+int	isnumeric(char *str);
+void  fill_up_struct(char **args, codexion_t *args_struct);
 
 #endif

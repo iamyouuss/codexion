@@ -1,4 +1,4 @@
-int	isnumeric(int c)
+int	isnumeric(char *str)
 {
     int i;
 

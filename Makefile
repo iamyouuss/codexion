@@ -8,8 +8,9 @@ INC_DIR = ./includes/
 
 INC = ${INC_DIR}codexion.h
 
-SRCS = src/main.c\
-	   src/parsing.c 
+SRCS = src/main.c \
+	   src/parsing.c \
+	   src/utils.c
 
 OBJS = ${SRCS:.c=.o}
 
