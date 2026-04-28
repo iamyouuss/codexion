@@ -1,24 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/28 19:08:48 by yghergho          #+#    #+#             */
+/*   Updated: 2026/04/28 19:15:29 by yghergho         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
-int    ft_error(int error_nb)
+int	ft_error(int error_nb)
 {
-    if (error_nb == 1)
-        printf("Wrong number of arguments (8 required)");
-    if (error_nb == 2)
-        printf("[Error type] Arguments must follow this format:\n -numbers_of_coders: int\n -time_to_burnout: int\n -time_to_compile: int\n -time_to_debug: int\n -time_to_refactor: int\n -number_of_compiles_required: int\n -dongle_cooldown: int\n -scheduler: str ('fifo' or 'edf')");
-    return (1);
+	if (error_nb == 1)
+		printf("Wrong number of arguments (8 required)");
+	if (error_nb == 2)
+		printf("[Error type] Arguments must be 7 numbers and 1 string");
+	return (1);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-    codexion_t  args_struct;
+	t_codexion	args_struct;
 
-    if (ac == 9)
-    {
-        if (parsing(&av[1]))
-            return (ft_error(2));
-        fill_up_struct(&av[1], &args_struct);
-    }
-    else
-        return (ft_error(1));
+	if (ac == 9)
+	{
+		if (parsing(&av[1]))
+			return (ft_error(2));
+		fill_up_struct(&av[1], &args_struct);
+	}
+	else
+		return (ft_error(1));
 }
