@@ -1,16 +1,19 @@
+
 #include "codexion.h"
 
 void  fill_up_struct(char **args, codexion_t *args_struct)
 {
-    int i; 
+    args_struct->number_of_coders = atoi(args[0]);
+    args_struct->time_to_burnout = atoi(args[1]);
+    args_struct->time_to_compile = atoi(args[2]);
+    args_struct->time_to_debug = atoi(args[3]);
+    args_struct->time_to_refactor = atoi(args[4]);
+    args_struct->number_of_compiles_required = atoi(args[5]);
+    args_struct->dongle_cooldown = atoi(args[6]);
+    args_struct->scheduler = args[7];
+    printf("%i\n", args_struct->number_of_coders);
+    printf("%s\n", args_struct->scheduler);
 
-    i = 0;
-    while (args[i])
-    {
-        args_struct->numbers_of_coders = 0;
-        printf("%i", args_struct->numbers_of_coders);
-        i++;
-    }
 }
 
 
@@ -27,8 +30,7 @@ int parsing(char **args)
         i++;
     }
     scheduler = args[7];
-    if (strcmp(scheduler, "fifo") != 0
-        && strcmp(scheduler, "edf") != 0)
+    if (strcasecmp(scheduler, "fifo") != 0 && strcasecmp(scheduler, "edf") != 0)
         return (1);
     return 0;
 }
