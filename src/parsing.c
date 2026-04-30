@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:56 by yghergho          #+#    #+#             */
-/*   Updated: 2026/04/28 19:30:06 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/04/30 16:34:29 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ void	fill_up_struct(char **args, t_codexion *args_struct)
 	args_struct->number_of_compiles_required = atoi(args[5]);
 	args_struct->dongle_cooldown = atoi(args[6]);
 	args_struct->scheduler = args[7];
-	printf("%i\n", args_struct->number_of_coders);
-	printf("%s\n", args_struct->scheduler);
 }
 
 int	parsing(char **args)
