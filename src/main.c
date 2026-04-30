@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 19:08:48 by yghergho          #+#    #+#             */
-/*   Updated: 2026/04/28 19:15:29 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/04/30 16:05:21 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_error(int error_nb)
 	if (error_nb == 1)
 		printf("Wrong number of arguments (8 required)");
 	if (error_nb == 2)
-		printf("[Error type] Arguments must be 7 numbers and 1 string");
+		printf("[Error type] Arguments must be 7 positive numbers and 1 string");
 	return (1);
 }
 
@@ -33,4 +33,5 @@ int	main(int ac, char **av)
 	}
 	else
 		return (ft_error(1));
+    run(&args_struct);
 }
