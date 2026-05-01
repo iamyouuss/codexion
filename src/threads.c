@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-t_tool_box	*create_coders(int total, t_dongle *dongles)
+t_tool_box	*create_coders(int total, pthread_mutex_t *dongles)
 {
 	int			i;
 	t_tool_box	*coders;
@@ -24,48 +24,67 @@ t_tool_box	*create_coders(int total, t_dongle *dongles)
 	while (i < total)
 	{
 		coders[i].id = i + 1;
-		coders[i].left_dongle = &dongles[i].dongle_id;
-		coders[i].right_dongle = &dongles[(i + 1) % total].dongle_id; //if i = 4, right = (4 + 1) % 5 = 0;
+		coders[i].left_dongle = &dongles[i];
+		coders[i].right_dongle = &dongles[(i + 1) % total]; //if i = 4, right = (4 + 1) % 5 = 0;
+		coders[i].last_compile = get_current_time();
+		coders[i].start_time = get_current_time();
 		i++;
 	}
 	return coders;
 }
 
-t_dongle	*create_dongles(int total)
+pthread_mutex_t	*create_dongles(int total)
 {
 	int	i;
-	t_dongle	*dongles;
+	pthread_mutex_t	*dongles;
 
-	dongles = malloc(sizeof(t_dongle) * total);
+	dongles = malloc(sizeof(pthread_mutex_t) * total);
 	if (!dongles)
 		return (NULL);
 	i = 0;
 	while (i < total)
 	{
-		dongles[i].id = i + 1;
-		pthread_mutex_init(&dongles[i].dongle_id, NULL);
+		pthread_mutex_init(&dongles[i], NULL);
 		i++;
 	}
 	return dongles;
 }
 
-void *compile(void *data)
+void *coder_routine(void *data)
 {
 	t_tool_box	*coder;
+	long long	start;
 	
 	coder = (t_tool_box *)data;
-	pthread_mutex_lock(coder->left_dongle);
-	printf("Coder %i has taken a dongle\n", coder->id);
-	pthread_mutex_lock(coder->right_dongle);
-	printf("Coder %i has taken a dongle\n", coder->id);
-	usleep(100000);
-
+	start = coder-> start_time;
+	while (1)
+	{
+		if (get_current_time() - coder->last_compile < 6)
+		{
+			printf("BURNOUT!");
+			return (NULL);
+		}
+		pthread_mutex_lock(coder->left_dongle);
+		printf("%lld Coder %i has taken a dongle\n", get_current_time() - start, coder->id);
+		pthread_mutex_lock(coder->right_dongle);
+		printf("%lld Coder %i has taken a dongle\n", get_current_time() - start, coder->id);
+		printf("%lld Coder %i is compiling\n", get_current_time() - start, coder->id);
+		coder->last_compile = get_current_time();
+		usleep(200000000);
+		pthread_mutex_unlock(coder->left_dongle);
+		pthread_mutex_unlock(coder->right_dongle);
+		printf("%lld Coder %i has released both dongle\n", get_current_time() - start, coder->id);
+		printf("%lld Coder %i is debbuging\n", get_current_time() - start, coder->id);
+		usleep(500000000);
+		printf("%lld Coder %i is refactoring\n", get_current_time() - start, coder->id);
+		usleep(500000000);
+	}
 	return (NULL);
 }
 
-void	run(t_codexion *args_struct)
+int	run(t_codexion *args_struct)
 {
-	t_dongle	*dongles;
+	pthread_mutex_t	*dongles;
 	t_tool_box		*coders;
 	int				i;
 
@@ -74,7 +93,7 @@ void	run(t_codexion *args_struct)
 	i = 0;
 	while (i < args_struct->number_of_coders)
 	{
-		pthread_create(&coders[i].thread_id, NULL, compile, &coders[i]);
+		pthread_create(&coders[i].thread_id, NULL, coder_routine, &coders[i]);
 		printf("Creation of thread %i [%ld]\n", coders[i].id, coders[i].thread_id);
 		i++;
 	}
@@ -83,4 +102,5 @@ void	run(t_codexion *args_struct)
 		pthread_join(coders[i].thread_id, NULL);
 		i++;
 	}
+	return (0);
 }

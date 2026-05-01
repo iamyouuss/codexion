@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-void	fill_up_struct(char **args, t_codexion *args_struct)
+void	convert_args(char **args, t_codexion *args_struct)
 {
 	args_struct->number_of_coders = atoi(args[0]);
 	args_struct->time_to_burnout = atoi(args[1]);

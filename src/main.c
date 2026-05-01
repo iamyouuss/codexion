@@ -12,15 +12,6 @@
 
 #include "codexion.h"
 
-int	ft_error(int error_nb)
-{
-	if (error_nb == 1)
-		printf("Wrong number of arguments (8 required)");
-	if (error_nb == 2)
-		printf("[Error type] Arguments must be 7 positive numbers and 1 string");
-	return (1);
-}
-
 int	main(int ac, char **av)
 {
 	t_codexion	args_struct;
@@ -29,9 +20,10 @@ int	main(int ac, char **av)
 	{
 		if (parsing(&av[1]))
 			return (ft_error(2));
-		fill_up_struct(&av[1], &args_struct);
+		convert_args(&av[1], &args_struct);
 	}
 	else
 		return (ft_error(1));
-    run(&args_struct);
+    if (run(&args_struct))
+		return (ft_error(3));
 }

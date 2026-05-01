@@ -9,6 +9,20 @@
 /*   Updated: 2026/04/28 19:28:27 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "codexion.h"
+
+int	ft_error(int error_nb)
+{
+	if (error_nb == 1)
+		printf("Wrong number of arguments (8 required)");
+	if (error_nb == 2)
+		printf("[Error type] Arguments must be 7 positive numbers and 1 string");
+	if (error_nb == 3)
+		printf("Something went wrong");
+	if (error_nb == 4)
+		printf("BURNOUT!");
+	return (1);
+}
 
 int	isnumeric(char *str)
 {
@@ -23,3 +37,14 @@ int	isnumeric(char *str)
 	}
 	return (0);
 }
+
+long long	get_current_time()
+{
+	struct timeval	tv;
+	long long	ms;
+
+	gettimeofday(&tv, NULL);
+	ms = 1000;
+	return ((long long)tv.tv_sec * ms) + (tv.tv_usec / ms);
+}
+

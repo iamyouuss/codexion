@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+#include <sys/time.h>
 
 typedef struct codexion
 {
@@ -37,18 +38,15 @@ typedef struct tool_box
 	pthread_t	thread_id;
 	pthread_mutex_t	*left_dongle;
 	pthread_mutex_t	*right_dongle;
-	//long	death_time;
+	long long	last_compile;
+	long long	start_time;
 }   t_tool_box;
-
-typedef struct dongle
-{
-	int	id;
-	pthread_mutex_t	dongle_id;
-}	t_dongle;
 
 int		parsing(char **args);
 int		isnumeric(char *str);
-void	fill_up_struct(char **args, t_codexion *args_struct);
-void	run(t_codexion *args_struct);
+int		ft_error(int error_nb);
+void	convert_args(char **args, t_codexion *args_struct);
+int		run(t_codexion *args_struct);
+long long		get_current_time();
 
 #endif
