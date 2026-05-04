@@ -48,3 +48,21 @@ long long	get_current_time()
 	return ((long long)tv.tv_sec * ms) + (tv.tv_usec / ms);
 }
 
+void	free_coders(int total, t_coder *coders)
+{
+	int	i;
+
+	i = 0;
+	while (i < total)
+	{
+		free(&coders[i]);
+		i++;
+	}
+	free(coders);
+}
+
+void	print_action(t_coder *coder, char *action)
+{
+	printf("%lld %i %s\n",
+		get_current_time() - coder->control->start_time, coder->id, action);
+}

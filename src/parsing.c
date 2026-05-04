@@ -12,16 +12,17 @@
 
 #include "codexion.h"
 
-void	convert_args(char **args, t_codexion *args_struct)
+void	convert_args(char **args, t_control *control)
 {
-	args_struct->number_of_coders = atoi(args[0]);
-	args_struct->time_to_burnout = atoi(args[1]);
-	args_struct->time_to_compile = atoi(args[2]);
-	args_struct->time_to_debug = atoi(args[3]);
-	args_struct->time_to_refactor = atoi(args[4]);
-	args_struct->number_of_compiles_required = atoi(args[5]);
-	args_struct->dongle_cooldown = atoi(args[6]);
-	args_struct->scheduler = args[7];
+	control->number_of_coders = atoi(args[0]);
+	control->time_to_burnout = atoi(args[1]);
+	control->time_to_compile = atoi(args[2]);
+	control->time_to_debug = atoi(args[3]);
+	control->time_to_refactor = atoi(args[4]);
+	control->number_of_compiles_required = atoi(args[5]);
+	control->dongle_cooldown = atoi(args[6]);
+	control->scheduler = args[7];
+	control->is_running = 1;
 }
 
 int	parsing(char **args)

@@ -14,16 +14,16 @@
 
 int	main(int ac, char **av)
 {
-	t_codexion	args_struct;
+	t_control	control;
 
 	if (ac == 9)
 	{
 		if (parsing(&av[1]))
 			return (ft_error(2));
-		convert_args(&av[1], &args_struct);
+		convert_args(&av[1], &control);
 	}
 	else
 		return (ft_error(1));
-    if (run(&args_struct))
+    if (run(&control))
 		return (ft_error(3));
 }

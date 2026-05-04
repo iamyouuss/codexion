@@ -20,8 +20,9 @@
 # include <unistd.h>
 #include <sys/time.h>
 
-typedef struct codexion
+typedef struct s_control
 {
+	int		is_running;
 	int		number_of_coders;
 	int		time_to_burnout;
 	int		time_to_compile;
@@ -30,23 +31,28 @@ typedef struct codexion
 	int		number_of_compiles_required;
 	int		dongle_cooldown;
 	char	*scheduler;
-}	t_codexion;
+	long long	start_time;
+}	t_control;
 
-typedef struct tool_box
+typedef struct s_coder
 {
 	int		id;
+	int		number_of_compiles;
+	long long	last_compile;
 	pthread_t	thread_id;
 	pthread_mutex_t	*left_dongle;
 	pthread_mutex_t	*right_dongle;
-	long long	last_compile;
-	long long	start_time;
-}   t_tool_box;
+	t_control	*control;
+}   t_coder;
 
 int		parsing(char **args);
 int		isnumeric(char *str);
 int		ft_error(int error_nb);
-void	convert_args(char **args, t_codexion *args_struct);
-int		run(t_codexion *args_struct);
+void	convert_args(char **args, t_control *control);
+int		run(t_control *control);
 long long		get_current_time();
+void	free_coders(int total, t_coder *coders);
+void	print_action(t_coder *coder, char *action);
+
 
 #endif
