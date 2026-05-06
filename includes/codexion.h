@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:04 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/05 18:16:38 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/06 23:48:12 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,26 +72,26 @@ typedef struct s_control
 }	t_control;
 
 //parsing
-int				ft_error(int error_nb);
-int				parsing(char **args);
-int				isnumeric(char *str);
-void			convert_args(char **args, t_control *control);
+int				parsing(int len,char **args);
 
 //utils
+void			clean_error(t_control *control);
 unsigned long	get_current_time(void);
-void			free_coders(int total, t_coder *coders);
-void			print_action(t_coder *coder, char *action);
+void			clean_up(t_control *control);
+void			stop_simulation(t_control *control);
+
+//init
+int				init_control(char **args, t_control *control);
 
 //threads
-t_dongle		*create_dongles(int total);
-t_coder			*create_coders(t_control *control);
 void			*coder_routine(void *data);
-void			init_control(t_control *control);
 
 //mutex_lock
 void			lock_dongle(t_coder *coder);
+void			print_action(t_coder *coder, char *action);
+int				is_simulation_running(t_control *control);
 
 //monitor
-int				is_simulation_running(t_control *control);
-void			*check_burnout(void *data);
+void			*monitor(void *data);
+
 #endif

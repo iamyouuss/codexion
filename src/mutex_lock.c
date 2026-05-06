@@ -32,11 +32,23 @@ void	lock_dongle(t_coder *coder)
 
 int	is_simulation_running(t_control *control)
 {
+	int	status;
+
 	pthread_mutex_lock(&control->run_lock);
-	if (!control->is_running)
-	{
-		pthread_mutex_unlock(&control->run_lock);
-		return (0);
+	status = control->is_running;
+	pthread_mutex_unlock(&control->run_lock);
+	return (status);
+}
+
+void	print_action(t_coder *coder, char *action)
+{
+	pthread_mutex_lock(&coder->control->print_lock);
+	if (is_simulation_running(coder->control))
+    {
+		printf("%lu %i %s\n",
+			get_current_time() - coder->control->start_time,
+			coder->id,
+			action);
 	}
-	return (1);
+	pthread_mutex_unlock(&coder->control->print_lock);
 }

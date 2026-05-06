@@ -3,55 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   threads.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:20:28 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/05 18:17:21 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/06 21:25:00 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-t_dongle	*create_dongles(int total)
+static int compile(t_coder *coder)
 {
-	int			i;
-	t_dongle	*dongles;
-
-	dongles = malloc(sizeof(t_dongle) * total);
-	if (!dongles)
-		return (NULL);
-	i = 0;
-	while (i < total)
+	if (is_simulation_running(coder->control))
 	{
-		dongles[i].id = i;
-		pthread_mutex_init(&dongles[i].dongle_lock, NULL);
-		i++;
+		lock_dongle(coder);
+		pthread_mutex_lock(&coder->compile_lock);
+		coder->last_compile = get_current_time();
+		pthread_mutex_unlock(&coder->compile_lock);
+		print_action(coder, "is compiling");
+		usleep(coder->control->config->time_to_compile * 1000);
+		pthread_mutex_lock(&coder->compile_lock);
+		coder->number_of_compiles++;
+		
+		pthread_mutex_unlock(&coder->compile_lock);
+		pthread_mutex_unlock(coder->left_dongle);
+		pthread_mutex_unlock(coder->right_dongle);
+		return (0);
 	}
-	return (dongles);
+	return (1);
 }
 
-t_coder	*create_coders(t_control *control)
+static int	debug(t_coder *coder)
 {
-	int		i;
-	int		total;
-	t_coder	*coders;
-
-	total = control->config->number_of_coders;
-	coders = malloc(sizeof(t_coder) * total);
-	if (!coders)
-		return (NULL);
-	i = 0;
-	while (i < total)
+	if (is_simulation_running(coder->control))
 	{
-		coders[i].id = i + 1;
-		coders[i].number_of_compiles = 0;
-		coders[i].left_dongle = &control->dongles[i].dongle_lock;
-		coders[i].right_dongle = &control->dongles[(i + 1) % total].dongle_lock;
-		coders[i].control = control;
-		pthread_mutex_init(&coders[i].compile_lock, NULL);
-		i++;
+		print_action(coder, "is debbuging");
+		usleep(coder->control->config->time_to_debug * 1000);
+		return(0);
 	}
-	return (coders);
+	return (1);
+}
+
+static int	refactor(t_coder *coder)
+{
+	if (is_simulation_running(coder->control))
+	{
+		print_action(coder, "is refactoring");
+		usleep(coder->control->config->time_to_refactor * 1000);
+		return (0);
+	}
+	return (1);
 }
 
 void	*coder_routine(void *data)
@@ -63,30 +64,13 @@ void	*coder_routine(void *data)
 	control = coder->control;
 	while (is_simulation_running(control))
 	{
-		lock_dongle(coder);
-		print_action(coder, "is compiling");
-		coder->last_compile = get_current_time();
-		pthread_mutex_lock(&coder->compile_lock);
-		coder->number_of_compiles++;
-		pthread_mutex_unlock(&coder->compile_lock);
-		usleep(control->config->time_to_compile);
-		pthread_mutex_unlock(coder->left_dongle);
-		pthread_mutex_unlock(coder->right_dongle);
-		print_action(coder, "is debbuging");
-		usleep(control->config->time_to_debug);
-		print_action(coder, "is refactoring");
-		usleep(control->config->time_to_refactor);
+		if (compile(coder))
+			break;
+		if (debug(coder))
+			break;
+		if (refactor(coder))
+			break;
 	}
 	return (NULL);
-}
-
-void	init_control(t_control *control)
-{
-	control->dongles = create_dongles(control->config->number_of_coders);
-	control->coders = create_coders(control);
-	control->start_time = get_current_time();
-	pthread_mutex_init(&control->run_lock, NULL);
-	pthread_mutex_init(&control->print_lock, NULL);
-	control->is_running = 1;
 }
 

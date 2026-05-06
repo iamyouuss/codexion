@@ -3,21 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 19:08:48 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/05 17:49:16 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/06 23:28:33 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-int	run(t_control *control)
+static int	run(t_control *control)
 {
 	int	i;
 
 	i = 0;
-	init_control(control);
 	while (i < control->config->number_of_coders)
 	{
 		control->coders[i].last_compile = get_current_time();
@@ -26,7 +25,7 @@ int	run(t_control *control)
 			NULL, coder_routine, &control->coders[i]);
 		i++;
 	}
-	pthread_create(&control->monitor_id, NULL, check_burnout, &control);
+	pthread_create(&control->monitor_id, NULL, monitor, control);
 	i = 0;
 	while (i < control->config->number_of_coders)
 	{
@@ -41,16 +40,15 @@ int	main(int ac, char **av)
 {
 	t_control	control;
 	t_config	config;
-
-	if (ac == 9)
-	{
-		if (parsing(&av[1]))
-			return (ft_error(2));
-		control.config = &config;
-		convert_args(&av[1], &control);
-	}
-	else
-		return (ft_error(1));
+	
+	control.config = &config;
+	if (parsing(ac - 1, &av[1]))
+		return (1);
+	if (init_control(&av[1], &control))
+		return (1);
 	if (run(&control))
-		return (ft_error(3));
+		return (1);
+	stop_simulation(&control);
+	clean_up(&control);
+	return (0);
 }
