@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:12:54 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/05 17:45:57 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/07 17:35:56 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	check_nb_of_compiles(t_control *control)
 {
 	int	i;
 	int	finished;
-	
+
 	i = 0;
 	finished = 0;
 	while (i < control->config->number_of_coders)
@@ -65,7 +65,7 @@ void	*monitor(void *data)
 	while (is_simulation_running(control))
 	{
 		if (check_burnout(control))
-			break;
+			break ;
 		if (check_nb_of_compiles(control))
 		{
 			pthread_mutex_lock(&control->run_lock);
@@ -75,7 +75,7 @@ void	*monitor(void *data)
 			printf("%lu All coders have completed their compilations\n",
 				get_current_time() - control->start_time);
 			pthread_mutex_unlock(&control->print_lock);
-			break;
+			break ;
 		}
 		usleep(1000);
 	}

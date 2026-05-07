@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 19:08:48 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/07 12:07:30 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 15:32:28 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	main(int ac, char **av)
 {
 	t_control	control;
 	t_config	config;
-	
+
 	control.config = &config;
 	if (parsing(ac - 1, &av[1]))
 		return (1);

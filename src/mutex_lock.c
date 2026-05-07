@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mutex_lock.c                                            :+:      :+:    :+:   */
+/*   mutex_lock.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
+/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 17:42:39 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/05 17:48:02 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/07 15:33:48 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	print_action(t_coder *coder, char *action)
 {
 	pthread_mutex_lock(&coder->control->print_lock);
 	if (is_simulation_running(coder->control))
-    {
+	{
 		printf("%lu %i %s\n",
 			get_current_time() - coder->control->start_time,
 			coder->id,

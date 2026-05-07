@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:04 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/07 10:55:57 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 17:36:13 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ typedef struct s_control
 }	t_control;
 
 //parsing
-int				parsing(int len,char **args);
+int				parsing(int len, char **args);
 
 //utils
 void			clean_error(t_control *control);

@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 19:16:09 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/07 12:09:06 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 15:34:41 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	clean_error(t_control *control)
 {
-	int i;
-	
+	int	i;
+
 	if (control->dongles)
 	{
 		i = 0;
@@ -41,7 +41,7 @@ unsigned long	get_current_time(void)
 void	clean_up(t_control *control)
 {
 	int	i;
-	
+
 	i = 0;
 	while (i < control->config->number_of_coders)
 	{
@@ -54,4 +54,3 @@ void	clean_up(t_control *control)
 	free(control->dongles);
 	free(control->coders);
 }
-

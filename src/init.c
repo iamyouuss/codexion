@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 21:11:23 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/07 10:44:27 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 14:04:24 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 static int	create_dongles(t_control *control)
 {
-	int			i;
-	int		    total;
+	int	i;
+	int	total;
 
-    total = control->config->number_of_coders;
+	total = control->config->number_of_coders;
 	control->dongles = malloc(sizeof(t_dongle) * total);
 	if (!control->dongles)
 		return (1);
@@ -47,7 +47,8 @@ static int	create_coders(t_control *control)
 		control->coders[i].id = i + 1;
 		control->coders[i].number_of_compiles = 0;
 		control->coders[i].left_dongle = &control->dongles[i].dongle_lock;
-		control->coders[i].right_dongle = &control->dongles[(i + 1) % total].dongle_lock;
+		control->coders[i].right_dongle = &control->dongles[
+			(i + 1) % total].dongle_lock;
 		control->coders[i].control = control;
 		if (pthread_mutex_init(&control->coders[i].compile_lock, NULL) != 0)
 			return (1);
@@ -70,16 +71,16 @@ static void	convert_args(char **args, t_control *control)
 
 int	init_control(char **args, t_control *control)
 {
-    convert_args(args, control);
+	convert_args(args, control);
 	if (create_dongles(control) || create_coders(control)
 		|| pthread_mutex_init(&control->run_lock, NULL) != 0
 		|| pthread_mutex_init(&control->print_lock, NULL) != 0)
-    {
-        printf("Failed to initiate simulation");
-        clean_error(control);
-        return (1);
-    }
+	{
+		printf("Failed to initiate simulation");
+		clean_error(control);
+		return (1);
+	}
 	control->start_time = get_current_time();
 	control->is_running = 1;
-    return (0);
+	return (0);
 }
