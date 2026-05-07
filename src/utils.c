@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 19:16:09 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/06 23:41:27 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 12:09:06 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,6 @@ unsigned long	get_current_time(void)
 	return (((unsigned long)tv.tv_sec * ms) + (tv.tv_usec / ms));
 }
 
-void	stop_simulation(t_control *control)
-{
-	int	i;
-
-	i = 0;
-	while(i < control->config->number_of_coders)
-	{
-		pthread_join(control->coders[i].thread_id, NULL);
-	}
-	pthread_join(control->monitor_id, NULL);
-}
-
 void	clean_up(t_control *control)
 {
 	int	i;
@@ -59,6 +47,7 @@ void	clean_up(t_control *control)
 	{
 		pthread_mutex_destroy(&control->coders[i].compile_lock);
 		pthread_mutex_destroy(&control->dongles[i].dongle_lock);
+		i++;
 	}
 	pthread_mutex_destroy(&control->run_lock);
 	pthread_mutex_destroy(&control->print_lock);

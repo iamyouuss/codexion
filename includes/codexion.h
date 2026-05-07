@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:04 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/06 23:48:12 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 10:55:57 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void			stop_simulation(t_control *control);
 int				init_control(char **args, t_control *control);
 
 //threads
+int				run(t_control *control);
 void			*coder_routine(void *data);
 
 //mutex_lock

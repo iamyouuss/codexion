@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:20:28 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/06 21:25:00 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 12:06:03 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,12 @@ static int compile(t_coder *coder)
 	if (is_simulation_running(coder->control))
 	{
 		lock_dongle(coder);
+		if (!is_simulation_running(coder->control))
+        {
+            pthread_mutex_unlock(coder->left_dongle);
+            pthread_mutex_unlock(coder->right_dongle);
+            return (1);
+        }
 		pthread_mutex_lock(&coder->compile_lock);
 		coder->last_compile = get_current_time();
 		pthread_mutex_unlock(&coder->compile_lock);
@@ -37,7 +43,7 @@ static int	debug(t_coder *coder)
 {
 	if (is_simulation_running(coder->control))
 	{
-		print_action(coder, "is debbuging");
+		print_action(coder, "is debuging");
 		usleep(coder->control->config->time_to_debug * 1000);
 		return(0);
 	}

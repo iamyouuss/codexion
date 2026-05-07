@@ -14,7 +14,8 @@ SRCS = src/main.c \
 	   src/threads.c \
 	   src/monitor.c \
 	   src/mutex_lock.c \
-	   src/init.c
+	   src/init.c \
+	   src/run.c
 
 OBJS = ${SRCS:.c=.o}
 
