@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 21:11:23 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/07 14:04:24 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 22:07:39 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static int	create_dongles(t_control *control)
 	while (i < total)
 	{
 		control->dongles[i].id = i;
+		control->dongles[i].available_at = get_current_time();
 		if (pthread_mutex_init(&control->dongles[i].dongle_lock, NULL) != 0)
 			return (1);
 		i++;
@@ -46,9 +47,8 @@ static int	create_coders(t_control *control)
 	{
 		control->coders[i].id = i + 1;
 		control->coders[i].number_of_compiles = 0;
-		control->coders[i].left_dongle = &control->dongles[i].dongle_lock;
-		control->coders[i].right_dongle = &control->dongles[
-			(i + 1) % total].dongle_lock;
+		control->coders[i].left_dongle = &control->dongles[i];
+		control->coders[i].right_dongle = &control->dongles[(i + 1) % total];
 		control->coders[i].control = control;
 		if (pthread_mutex_init(&control->coders[i].compile_lock, NULL) != 0)
 			return (1);
@@ -76,8 +76,8 @@ int	init_control(char **args, t_control *control)
 		|| pthread_mutex_init(&control->run_lock, NULL) != 0
 		|| pthread_mutex_init(&control->print_lock, NULL) != 0)
 	{
-		printf("Failed to initiate simulation");
-		clean_error(control);
+		printf("Error: Failed to initiate simulation");
+		clean_up(control);
 		return (1);
 	}
 	control->start_time = get_current_time();

@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 10:51:51 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/07 15:38:13 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 22:23:03 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,12 @@ int	run(t_control *control)
 	if (!create(control))
 		monitor_created = 1;
 	else
-		printf("Erro: Failed to create all threads");
+	{
+		printf("Error: Failed to create all threads");
+		join(control, monitor_created);
+		clean_up(control);
+		return (1);
+	}
 	join(control, monitor_created);
 	return (0);
 }

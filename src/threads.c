@@ -6,7 +6,7 @@
 /*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:20:28 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/07 15:31:59 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/07 22:11:35 by iam_youuss       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ static int	compile(t_coder *coder)
 {
 	if (is_simulation_running(coder->control))
 	{
-		lock_dongle(coder);
+		lock_dongles(coder);
 		if (!is_simulation_running(coder->control))
 		{
-			pthread_mutex_unlock(coder->left_dongle);
-			pthread_mutex_unlock(coder->right_dongle);
+			pthread_mutex_unlock(&coder->left_dongle->dongle_lock);
+			pthread_mutex_unlock(&coder->right_dongle->dongle_lock);
 			return (1);
 		}
 		pthread_mutex_lock(&coder->compile_lock);
@@ -31,8 +31,9 @@ static int	compile(t_coder *coder)
 		pthread_mutex_lock(&coder->compile_lock);
 		coder->number_of_compiles++;
 		pthread_mutex_unlock(&coder->compile_lock);
-		pthread_mutex_unlock(coder->left_dongle);
-		pthread_mutex_unlock(coder->right_dongle);
+		set_dongles_cooldown(coder);
+		pthread_mutex_unlock(&coder->left_dongle->dongle_lock);
+		pthread_mutex_unlock(&coder->right_dongle->dongle_lock);
 		return (0);
 	}
 	return (1);
