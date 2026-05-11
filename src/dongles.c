@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dongles.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 21:01:00 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/07 22:11:16 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/11 14:05:33 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,20 @@ void	set_dongles_cooldown(t_coder *coder)
 unsigned long	dongles_coolddown(t_coder *coder)
 {
 	unsigned long	now;
+	unsigned long	left;
+	unsigned long	right;
 	unsigned long	cooldown;
 
 	now = get_current_time();
+	left = coder->left_dongle->available_at;
+	right = coder->right_dongle->available_at;
 	cooldown = 0;
-	if (now < coder->right_dongle->available_at || now < coder->left_dongle->available_at)
+	if (now < right || now < left)
 	{
-		if (coder->left_dongle->available_at > coder->right_dongle->available_at)
-			cooldown = coder->left_dongle->available_at - now;
+		if (left > right)
+			cooldown = left - now;
 		else
-			cooldown = coder->right_dongle->available_at - now;
+			cooldown = right - now;
 	}
 	return (cooldown);
 }

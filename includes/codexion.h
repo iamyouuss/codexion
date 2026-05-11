@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:04 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/07 22:11:02 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/11 14:08:36 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_config
 	unsigned long	time_to_refactor;
 	int				number_of_compiles_required;
 	unsigned long	dongle_cooldown;
-	char			*scheduler;
+	int			*scheduler;
 }	t_config;
 
 typedef struct s_dongle
