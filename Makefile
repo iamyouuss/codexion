@@ -13,7 +13,6 @@ SRCS = src/main.c \
 	   src/utils.c \
 	   src/threads.c \
 	   src/monitor.c \
-	   src/mutex_lock.c \
 	   src/init.c \
 	   src/run.c \
 	   src/dongles.c

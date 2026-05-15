@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 21:11:23 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/11 14:11:49 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/15 11:36:48 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,10 @@ static void	convert_args(char **args, t_control *control)
 	control->config->time_to_refactor = atoi(args[4]);
 	control->config->number_of_compiles_required = atoi(args[5]);
 	control->config->dongle_cooldown = atoi(args[6]);
-    if (!strcmp(args[7], "fifo"))
-    	control->config->scheduler = 0;
-    else
-        control->config->scheduler = 1;
+	if (!strcmp(args[7], "fifo"))
+		control->config->scheduler = 0;
+	else
+		control->config->scheduler = 1;
 }
 
 int	init_control(char **args, t_control *control)

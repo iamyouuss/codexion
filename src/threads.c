@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   threads.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:20:28 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/07 22:11:35 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/15 13:31:29 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,12 @@ void	*coder_routine(void *data)
 
 	coder = (t_coder *)data;
 	control = coder->control;
+    if (coder->control->config->number_of_coders == 1)
+    {
+        usleep(coder->control->config->time_to_burnout);
+        print_action(coder, "burned out !");
+        return (NULL);
+    }
 	while (is_simulation_running(control))
 	{
 		if (compile(coder))

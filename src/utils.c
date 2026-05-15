@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 19:16:09 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/07 22:08:56 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/15 18:35:48 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,16 +53,16 @@ void	clean_up(t_control *control)
 		return ;
 	if (control->dongles)
 	{
-		i = 0;
-		while (i++ < control->config->number_of_coders)
+		i = -1;
+		while (++i < control->config->number_of_coders)
 			pthread_mutex_destroy(&control->dongles[i].dongle_lock);
 		free(control->dongles);
 		control->dongles = NULL;
 	}
 	if (control->coders)
 	{
-		i = 0;
-		while (i++ < control->config->number_of_coders)
+		i = -1;
+		while (++i < control->config->number_of_coders)
 			pthread_mutex_destroy(&control->coders[i].compile_lock);
 		free(control->coders);
 		control->coders = NULL;

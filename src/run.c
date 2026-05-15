@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   run.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iam_youuss <iam_youuss@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 10:51:51 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/07 22:23:03 by iam_youuss       ###   ########.fr       */
+/*   Updated: 2026/05/15 18:00:45 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static int	create(t_control *control)
+static int	create_threads(t_control *control)
 {
 	int	i;
 
@@ -31,14 +31,21 @@ static int	create(t_control *control)
 		}
 		i++;
 	}
-	if (pthread_create(&control->monitor_id, NULL, monitor, control) != 0)
+	return (0);
+}
+
+static int create_monitor(t_control *control)
+{
+    if (control->config->number_of_coders == 1)
+        return (0);
+    if (pthread_create(&control->monitor_id, NULL, monitor, control) != 0)
 	{
 		pthread_mutex_lock(&control->run_lock);
 		control->is_running = 0;
 		pthread_mutex_unlock(&control->run_lock);
 		return (1);
 	}
-	return (0);
+    return (0);
 }
 
 static void	join(t_control *control, int monitor_created)
@@ -51,7 +58,7 @@ static void	join(t_control *control, int monitor_created)
 		pthread_join(control->coders[i].thread_id, NULL);
 		i++;
 	}
-	if (monitor_created)
+	if (monitor_created && control->config->number_of_coders > 1)
 		pthread_join(control->monitor_id, NULL);
 }
 
@@ -60,15 +67,15 @@ int	run(t_control *control)
 	int	monitor_created;
 
 	monitor_created = 0;
-	if (!create(control))
-		monitor_created = 1;
-	else
+	
+	if (create_threads(control) || create_monitor(control))
 	{
 		printf("Error: Failed to create all threads");
 		join(control, monitor_created);
 		clean_up(control);
 		return (1);
 	}
+    monitor_created = 1;
 	join(control, monitor_created);
 	return (0);
 }
