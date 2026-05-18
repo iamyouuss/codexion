@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 21:01:00 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/11 14:05:33 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/18 20:54:38 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ unsigned long	dongles_coolddown(t_coder *coder)
 	return (cooldown);
 }
 
-void	lock_dongles(t_coder *coder)
+void	fifo_lock_dongles(t_coder *coder)
 {
 	if (coder->id % 2 == 0)
 	{
@@ -59,4 +59,9 @@ void	lock_dongles(t_coder *coder)
 		print_action(coder, "has taken a dongle");
 		print_action(coder, "has taken a dongle");
 	}
+}
+
+void	edf_lock_dongles(t_coder *coder)
+{
+	(void)coder;
 }

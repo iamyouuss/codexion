@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 10:51:51 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/15 18:00:45 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/18 20:56:19 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,18 @@ static int	create_threads(t_control *control)
 	return (0);
 }
 
-static int create_monitor(t_control *control)
+static int	create_monitor(t_control *control)
 {
-    if (control->config->number_of_coders == 1)
-        return (0);
-    if (pthread_create(&control->monitor_id, NULL, monitor, control) != 0)
+	if (control->config->number_of_coders == 1)
+		return (0);
+	if (pthread_create(&control->monitor_id, NULL, monitor, control) != 0)
 	{
 		pthread_mutex_lock(&control->run_lock);
 		control->is_running = 0;
 		pthread_mutex_unlock(&control->run_lock);
 		return (1);
 	}
-    return (0);
+	return (0);
 }
 
 static void	join(t_control *control, int monitor_created)
@@ -67,7 +67,6 @@ int	run(t_control *control)
 	int	monitor_created;
 
 	monitor_created = 0;
-	
 	if (create_threads(control) || create_monitor(control))
 	{
 		printf("Error: Failed to create all threads");
@@ -75,7 +74,7 @@ int	run(t_control *control)
 		clean_up(control);
 		return (1);
 	}
-    monitor_created = 1;
+	monitor_created = 1;
 	join(control, monitor_created);
 	return (0);
 }

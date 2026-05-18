@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:04 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/15 11:36:13 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/18 20:59:06 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ typedef struct s_dongle
 	int				id;
 	unsigned long	available_at;
 	pthread_mutex_t	dongle_lock;
+
+	int				is_available;
 }	t_dongle;
 
 typedef struct s_coder
@@ -55,7 +57,17 @@ typedef struct s_coder
 	t_dongle		*right_dongle;
 
 	t_control		*control;
+
+	int				has_dongles;
+	unsigned long	ticket;
 }	t_coder;
+
+typedef struct s_heap
+{
+	t_coder			**array;
+	int				size;
+	int				max;	
+}	t_heap;
 
 typedef struct s_control
 {
@@ -69,6 +81,12 @@ typedef struct s_control
 	pthread_t		monitor_id;
 	pthread_mutex_t	run_lock;
 	pthread_mutex_t	print_lock;
+
+	void			(*lock_dongles)(t_coder *);
+	unsigned long	ticket_counter;
+	t_heap			*heap;
+	pthread_mutex_t	heap_lock;
+	pthread_cond_t	heap_cond;
 }	t_control;
 
 //parsing
@@ -90,7 +108,8 @@ void			*coder_routine(void *data);
 //dongles
 void			set_dongles_cooldown(t_coder *coder);
 unsigned long	dongles_coolddown(t_coder *coder);
-void			lock_dongles(t_coder *coder);
+void			fifo_lock_dongles(t_coder *coder);
+void			edf_lock_dongles(t_coder *coder);
 
 //monitor
 void			*monitor(void *data);

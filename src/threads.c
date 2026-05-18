@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:20:28 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/15 13:31:29 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/18 20:57:26 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	compile(t_coder *coder)
 {
 	if (is_simulation_running(coder->control))
 	{
-		lock_dongles(coder);
+		coder->control->lock_dongles(coder);
 		if (!is_simulation_running(coder->control))
 		{
 			pthread_mutex_unlock(&coder->left_dongle->dongle_lock);
@@ -68,12 +68,12 @@ void	*coder_routine(void *data)
 
 	coder = (t_coder *)data;
 	control = coder->control;
-    if (coder->control->config->number_of_coders == 1)
-    {
-        usleep(coder->control->config->time_to_burnout);
-        print_action(coder, "burned out !");
-        return (NULL);
-    }
+	if (coder->control->config->number_of_coders == 1)
+	{
+		usleep(coder->control->config->time_to_burnout);
+		print_action(coder, "burned out !");
+		return (NULL);
+	}
 	while (is_simulation_running(control))
 	{
 		if (compile(coder))

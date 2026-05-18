@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 21:11:23 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/15 11:36:48 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/18 20:55:41 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,11 @@ static int	create_dongles(t_control *control)
 	{
 		control->dongles[i].id = i;
 		control->dongles[i].available_at = get_current_time();
-		if (pthread_mutex_init(&control->dongles[i].dongle_lock, NULL) != 0)
-			return (1);
+		if (control->config->scheduler)
+			control->dongles[i].is_available = 1;
+		else
+			if (pthread_mutex_init(&control->dongles[i].dongle_lock, NULL) != 0)
+				return (1);
 		i++;
 	}
 	return (0);
@@ -72,6 +75,26 @@ static void	convert_args(char **args, t_control *control)
 		control->config->scheduler = 1;
 }
 
+int	init_edf_scheduler(t_control *control)
+{
+	int		i;
+
+	i = 0;
+	control->heap = malloc(sizeof(t_heap));
+	if (!control->heap)
+		return (1);
+	control->heap->array = malloc(
+			sizeof(t_coder *) * control->config->number_of_coders);
+	if (!control->heap->array)
+		return (1);
+	control->ticket_counter = 1;
+	if (pthread_mutex_init(&control->heap_lock, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&control->heap_cond, NULL) != 0)
+		return (1);
+	return (0);
+}
+
 int	init_control(char **args, t_control *control)
 {
 	convert_args(args, control);
@@ -83,6 +106,11 @@ int	init_control(char **args, t_control *control)
 		clean_up(control);
 		return (1);
 	}
+	if (control->config->scheduler)
+		if (init_edf_scheduler(control))
+			return (1);
+	else
+		control->lock_dongles = fifo_lock_dongles;
 	control->start_time = get_current_time();
 	control->is_running = 1;
 	return (0);

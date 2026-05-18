@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 19:16:09 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/15 18:35:48 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/18 20:52:16 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,9 @@ void	clean_up(t_control *control)
 	if (control->dongles)
 	{
 		i = -1;
-		while (++i < control->config->number_of_coders)
-			pthread_mutex_destroy(&control->dongles[i].dongle_lock);
+		if (control->config->scheduler)
+			while (++i < control->config->number_of_coders)
+				pthread_mutex_destroy(&control->dongles[i].dongle_lock);
 		free(control->dongles);
 		control->dongles = NULL;
 	}
