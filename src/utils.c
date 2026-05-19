@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 19:16:09 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/18 20:52:16 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/19 16:41:41 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,17 @@ unsigned long	get_current_time(void)
 	return (((unsigned long)tv.tv_sec * ms) + (tv.tv_usec / ms));
 }
 
+void    clean_edf(t_control *control)
+{
+    if (control->heap.array)
+		{
+			free(control->heap.array);
+			control->heap.array = NULL;
+		}
+		pthread_mutex_destroy(&control->heap_lock);
+		pthread_cond_destroy(&control->heap_cond);
+}
+
 void	clean_up(t_control *control)
 {
 	int	i;
@@ -54,7 +65,7 @@ void	clean_up(t_control *control)
 	if (control->dongles)
 	{
 		i = -1;
-		if (control->config->scheduler)
+		if (!control->config->scheduler)
 			while (++i < control->config->number_of_coders)
 				pthread_mutex_destroy(&control->dongles[i].dongle_lock);
 		free(control->dongles);
@@ -70,4 +81,6 @@ void	clean_up(t_control *control)
 	}
 	pthread_mutex_destroy(&control->run_lock);
 	pthread_mutex_destroy(&control->print_lock);
+    if (control->config->scheduler)
+        clean_edf(control);
 }

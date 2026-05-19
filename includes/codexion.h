@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:04 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/18 20:59:06 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/19 16:00:42 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ typedef struct s_control
 
 	void			(*lock_dongles)(t_coder *);
 	unsigned long	ticket_counter;
-	t_heap			*heap;
+	t_heap			heap;
 	pthread_mutex_t	heap_lock;
 	pthread_cond_t	heap_cond;
 }	t_control;

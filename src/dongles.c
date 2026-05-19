@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 21:01:00 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/18 20:54:38 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/19 17:12:59 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,32 @@ void	fifo_lock_dongles(t_coder *coder)
 		print_action(coder, "has taken a dongle");
 		print_action(coder, "has taken a dongle");
 	}
+}
+
+int is_more_urgent(t_coder *a, t_coder *b)
+{
+    unsigned long   a_deadline;
+    unsigned long   b_deadline;
+
+    a_deadline = a->last_compile + a->control->config->time_to_burnout;
+    b_deadline = b->last_compile + b->control->config->time_to_burnout;
+    if (a_deadline < b_deadline)
+        return (1);
+    if (a_deadline == b_deadline)
+    {
+        if (a->ticket < b->ticket)
+            return (1);
+    }
+    return (0);
+}
+
+void    swap_coders(t_coder **array, int index_a, int index_b)
+{
+    t_coder *temp;
+
+    temp = array[index_a];
+    array[index_a] = array[index_b];
+    array[index_b] = temp;
 }
 
 void	edf_lock_dongles(t_coder *coder)

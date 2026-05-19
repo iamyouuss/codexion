@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 21:11:23 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/18 20:55:41 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/19 16:30:46 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,18 +80,18 @@ int	init_edf_scheduler(t_control *control)
 	int		i;
 
 	i = 0;
-	control->heap = malloc(sizeof(t_heap));
-	if (!control->heap)
-		return (1);
-	control->heap->array = malloc(
+	control->heap.array = malloc(
 			sizeof(t_coder *) * control->config->number_of_coders);
-	if (!control->heap->array)
+	if (!control->heap.array)
 		return (1);
+    control->heap.max = control->config->number_of_coders;
+    control->heap.size = 0;
 	control->ticket_counter = 1;
 	if (pthread_mutex_init(&control->heap_lock, NULL) != 0)
 		return (1);
-	if (pthread_mutex_init(&control->heap_cond, NULL) != 0)
+	if (pthread_cond_init(&control->heap_cond, NULL) != 0)
 		return (1);
+    control->lock_dongles = edf_lock_dongles;
 	return (0);
 }
 
@@ -100,16 +100,15 @@ int	init_control(char **args, t_control *control)
 	convert_args(args, control);
 	if (create_dongles(control) || create_coders(control)
 		|| pthread_mutex_init(&control->run_lock, NULL) != 0
-		|| pthread_mutex_init(&control->print_lock, NULL) != 0)
+		|| pthread_mutex_init(&control->print_lock, NULL) != 0
+        || (control->config->scheduler && init_edf_scheduler(control))
+    )
 	{
 		printf("Error: Failed to initiate simulation");
 		clean_up(control);
 		return (1);
 	}
-	if (control->config->scheduler)
-		if (init_edf_scheduler(control))
-			return (1);
-	else
+	if (!control->config->scheduler)
 		control->lock_dongles = fifo_lock_dongles;
 	control->start_time = get_current_time();
 	control->is_running = 1;
