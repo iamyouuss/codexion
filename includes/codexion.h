@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:04 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/19 16:00:42 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 17:47:38 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef struct s_coder
 typedef struct s_heap
 {
 	t_coder			**array;
+	t_coder			**wait_list;
 	int				size;
 	int				max;	
 }	t_heap;
@@ -79,6 +80,7 @@ typedef struct s_control
 	t_dongle		*dongles;
 
 	pthread_t		monitor_id;
+	pthread_mutex_t	start;
 	pthread_mutex_t	run_lock;
 	pthread_mutex_t	print_lock;
 
@@ -105,11 +107,18 @@ int				init_control(char **args, t_control *control);
 int				run(t_control *control);
 void			*coder_routine(void *data);
 
-//dongles
+//dongles cooldown
 void			set_dongles_cooldown(t_coder *coder);
-unsigned long	dongles_coolddown(t_coder *coder);
+unsigned long	dongles_cooldown(t_coder *coder);
+
+//scheduler
 void			fifo_lock_dongles(t_coder *coder);
 void			edf_lock_dongles(t_coder *coder);
+void			dispatch_dongles(t_control *control);
+
+//heap
+void			push_to_heap(t_coder *coder, t_heap *heap);
+t_coder			*pop_from_heap(t_heap *heap);
 
 //monitor
 void			*monitor(void *data);

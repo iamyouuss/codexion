@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 21:11:23 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/19 16:30:46 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 17:49:24 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,18 @@ int	init_edf_scheduler(t_control *control)
 	i = 0;
 	control->heap.array = malloc(
 			sizeof(t_coder *) * control->config->number_of_coders);
-	if (!control->heap.array)
+	control->heap.wait_list = malloc(
+			sizeof(t_coder *) * control->config->number_of_coders);
+	if (!control->heap.array || control->heap.wait_list)
 		return (1);
-    control->heap.max = control->config->number_of_coders;
-    control->heap.size = 0;
+	control->heap.max = control->config->number_of_coders;
+	control->heap.size = 0;
 	control->ticket_counter = 1;
 	if (pthread_mutex_init(&control->heap_lock, NULL) != 0)
 		return (1);
 	if (pthread_cond_init(&control->heap_cond, NULL) != 0)
 		return (1);
-    control->lock_dongles = edf_lock_dongles;
+	control->lock_dongles = edf_lock_dongles;
 	return (0);
 }
 
@@ -101,8 +103,8 @@ int	init_control(char **args, t_control *control)
 	if (create_dongles(control) || create_coders(control)
 		|| pthread_mutex_init(&control->run_lock, NULL) != 0
 		|| pthread_mutex_init(&control->print_lock, NULL) != 0
-        || (control->config->scheduler && init_edf_scheduler(control))
-    )
+		|| (control->config->scheduler && init_edf_scheduler(control))
+	)
 	{
 		printf("Error: Failed to initiate simulation");
 		clean_up(control);

@@ -9,13 +9,15 @@ INC_DIR = ./includes/
 INC = ${INC_DIR}codexion.h
 
 SRCS = src/main.c \
-	   src/parsing.c \
 	   src/utils.c \
+	   src/parsing.c \
+	   src/init.c \
 	   src/threads.c \
 	   src/monitor.c \
-	   src/init.c \
 	   src/run.c \
-	   src/dongles.c
+	   src/cooldown.c \
+	   src/scheduler.c \
+	   src/heap.c
 
 OBJS = ${SRCS:.c=.o}
 
