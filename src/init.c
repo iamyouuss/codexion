@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 21:11:23 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/20 20:18:49 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 20:29:44 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ static int	create_coders(t_control *control)
 		control->coders[i].control = control;
 		if (pthread_mutex_init(&control->coders[i].compile_lock, NULL) != 0)
 			return (1);
+		if (control->config->scheduler)
+			control->coders[i].has_dongles = 0;
 		i++;
 	}
 	return (0);
