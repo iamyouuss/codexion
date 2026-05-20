@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:20:28 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/18 20:57:26 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 20:23:04 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ static int	compile(t_coder *coder)
 		coder->control->lock_dongles(coder);
 		if (!is_simulation_running(coder->control))
 		{
-			pthread_mutex_unlock(&coder->left_dongle->dongle_lock);
-			pthread_mutex_unlock(&coder->right_dongle->dongle_lock);
+			coder->control->unlock_dongles(coder);
 			return (1);
 		}
 		pthread_mutex_lock(&coder->compile_lock);
@@ -32,8 +31,7 @@ static int	compile(t_coder *coder)
 		coder->number_of_compiles++;
 		pthread_mutex_unlock(&coder->compile_lock);
 		set_dongles_cooldown(coder);
-		pthread_mutex_unlock(&coder->left_dongle->dongle_lock);
-		pthread_mutex_unlock(&coder->right_dongle->dongle_lock);
+		coder->control->unlock_dongles(coder);
 		return (0);
 	}
 	return (1);
@@ -61,6 +59,15 @@ static int	refactor(t_coder *coder)
 	return (1);
 }
 
+static void	start_in_time(t_coder *coder)
+{
+	pthread_mutex_lock(&coder->control->start_lock);
+	while (!coder->control->start)
+		pthread_cond_wait(&coder->control->start_cond,
+			&coder->control->start_lock);
+	pthread_mutex_unlock(&coder->control->start_lock);
+}
+
 void	*coder_routine(void *data)
 {
 	t_coder		*coder;
@@ -74,6 +81,7 @@ void	*coder_routine(void *data)
 		print_action(coder, "burned out !");
 		return (NULL);
 	}
+	start_in_time(coder);
 	while (is_simulation_running(control))
 	{
 		if (compile(coder))

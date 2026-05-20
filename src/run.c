@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 10:51:51 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/18 20:56:19 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 20:22:42 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ static int	create_threads(t_control *control)
 	i = 0;
 	while (i < control->config->number_of_coders)
 	{
-		control->coders[i].last_compile = get_current_time();
 		if (pthread_create(&control->coders[i].thread_id,
 				NULL, coder_routine, &control->coders[i]) != 0)
 		{
@@ -64,9 +63,12 @@ static void	join(t_control *control, int monitor_created)
 
 int	run(t_control *control)
 {
-	int	monitor_created;
+	int				i;
+	int				monitor_created;
+	unsigned long	now;
 
 	monitor_created = 0;
+	control->start = 0;
 	if (create_threads(control) || create_monitor(control))
 	{
 		printf("Error: Failed to create all threads");
@@ -74,6 +76,14 @@ int	run(t_control *control)
 		clean_up(control);
 		return (1);
 	}
+	pthread_mutex_lock(&control->start_lock);
+	now = get_current_time();
+	i = -1;
+	while (++i < control->config->number_of_coders)
+		control->coders[i].last_compile = now;
+	control->start = 1;
+	pthread_cond_broadcast(&control->start_cond);
+	pthread_mutex_unlock(&control->start_lock);
 	monitor_created = 1;
 	join(control, monitor_created);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/20 17:20:58 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/20 17:43:13 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 20:19:33 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,13 @@ void	fifo_lock_dongles(t_coder *coder)
 	}
 }
 
-void	dispatch_dongles(t_control *control)
+void	fifo_unlock_dongles(t_coder *coder)
+{
+	pthread_mutex_unlock(&coder->left_dongle->dongle_lock);
+	pthread_mutex_unlock(&coder->right_dongle->dongle_lock);
+}
+
+static void	dispatch_dongles(t_control *control)
 {
 	int		i;
 	int		wait_list_size;
@@ -49,6 +55,8 @@ void	dispatch_dongles(t_control *control)
 			current->right_dongle->is_available = 0;
 			current->has_dongles = 1;
 			pthread_cond_broadcast(&control->heap_cond);
+			print_action(current, "has taken a dongle");
+			print_action(current, "has taken a dongle");
 			break ;
 		}
 		control->heap.wait_list[wait_list_size] = current;
@@ -69,5 +77,15 @@ void	edf_lock_dongles(t_coder *coder)
 	while (!coder->has_dongles && coder->control->is_running)
 		pthread_cond_wait(&coder->control->heap_cond,
 			&coder->control->heap_lock);
+	pthread_mutex_unlock(&coder->control->heap_lock);
+}
+
+void	edf_unlock_dongles(t_coder *coder)
+{
+	pthread_mutex_lock(&coder->control->heap_lock);
+	coder->left_dongle->is_available = 1;
+	coder->right_dongle->is_available = 1;
+	coder->has_dongles = 0;
+	dispatch_dongles(coder->control);
 	pthread_mutex_unlock(&coder->control->heap_lock);
 }

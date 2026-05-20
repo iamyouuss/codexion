@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:56 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/15 11:35:46 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 20:18:31 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	is_numeric(char *str)
 	return (1);
 }
 
-int	superior_to_zero(int len, char **args)
+static int	superior_to_zero(int len, char **args)
 {
 	int	i;
 

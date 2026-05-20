@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:04 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/20 17:47:38 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 20:19:44 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ typedef struct s_heap
 typedef struct s_control
 {
 	int				is_running;
+	int				start;
 	unsigned long	start_time;
 
 	t_config		*config;
@@ -80,11 +81,13 @@ typedef struct s_control
 	t_dongle		*dongles;
 
 	pthread_t		monitor_id;
-	pthread_mutex_t	start;
+	pthread_cond_t	start_cond;
+	pthread_mutex_t	start_lock;
 	pthread_mutex_t	run_lock;
 	pthread_mutex_t	print_lock;
 
 	void			(*lock_dongles)(t_coder *);
+	void			(*unlock_dongles)(t_coder *);
 	unsigned long	ticket_counter;
 	t_heap			heap;
 	pthread_mutex_t	heap_lock;
@@ -113,8 +116,9 @@ unsigned long	dongles_cooldown(t_coder *coder);
 
 //scheduler
 void			fifo_lock_dongles(t_coder *coder);
+void			fifo_unlock_dongles(t_coder *coder);
 void			edf_lock_dongles(t_coder *coder);
-void			dispatch_dongles(t_control *control);
+void			edf_unlock_dongles(t_coder *coder);
 
 //heap
 void			push_to_heap(t_coder *coder, t_heap *heap);

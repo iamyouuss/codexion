@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/06 21:11:23 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/20 17:49:24 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 20:18:49 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static void	convert_args(char **args, t_control *control)
 		control->config->scheduler = 1;
 }
 
-int	init_edf_scheduler(t_control *control)
+static int	init_edf_scheduler(t_control *control)
 {
 	int		i;
 
@@ -84,7 +84,7 @@ int	init_edf_scheduler(t_control *control)
 			sizeof(t_coder *) * control->config->number_of_coders);
 	control->heap.wait_list = malloc(
 			sizeof(t_coder *) * control->config->number_of_coders);
-	if (!control->heap.array || control->heap.wait_list)
+	if (!control->heap.array || !control->heap.wait_list)
 		return (1);
 	control->heap.max = control->config->number_of_coders;
 	control->heap.size = 0;
@@ -94,6 +94,7 @@ int	init_edf_scheduler(t_control *control)
 	if (pthread_cond_init(&control->heap_cond, NULL) != 0)
 		return (1);
 	control->lock_dongles = edf_lock_dongles;
+	control->unlock_dongles = edf_unlock_dongles;
 	return (0);
 }
 
@@ -103,6 +104,8 @@ int	init_control(char **args, t_control *control)
 	if (create_dongles(control) || create_coders(control)
 		|| pthread_mutex_init(&control->run_lock, NULL) != 0
 		|| pthread_mutex_init(&control->print_lock, NULL) != 0
+		|| pthread_mutex_init(&control->start_lock, NULL) != 0
+		|| pthread_cond_init(&control->start_cond, NULL) != 0
 		|| (control->config->scheduler && init_edf_scheduler(control))
 	)
 	{
@@ -111,7 +114,10 @@ int	init_control(char **args, t_control *control)
 		return (1);
 	}
 	if (!control->config->scheduler)
+	{
 		control->lock_dongles = fifo_lock_dongles;
+		control->unlock_dongles = fifo_unlock_dongles;
+	}
 	control->start_time = get_current_time();
 	control->is_running = 1;
 	return (0);

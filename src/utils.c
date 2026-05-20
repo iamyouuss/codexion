@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 19:16:09 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/20 17:50:07 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 20:24:53 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ void	clean_edf(t_control *control)
 	{
 		free(control->heap.array);
 		control->heap.array = NULL;
+	}
+	if (control->heap.wait_list)
+	{
+		free(control->heap.wait_list);
+		control->heap.wait_list = NULL;
 	}
 	pthread_mutex_destroy(&control->heap_lock);
 	pthread_cond_destroy(&control->heap_cond);

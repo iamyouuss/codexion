@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:12:54 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/15 13:16:28 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/20 20:17:34 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,21 @@ static int	check_nb_of_compiles(t_control *control)
 	return (0);
 }
 
+static void	start_in_time(t_control *control)
+{
+	pthread_mutex_lock(&control->start_lock);
+	while (!control->start)
+		pthread_cond_wait(&control->start_cond,
+			&control->start_lock);
+	pthread_mutex_unlock(&control->start_lock);
+}
+
 void	*monitor(void *data)
 {
 	t_control	*control;
 
 	control = (t_control *)data;
+	start_in_time(control);
 	while (is_simulation_running(control))
 	{
 		if (check_burnout(control))
