@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:56 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/20 20:18:31 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/21 11:44:39 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	superior_to_zero(int len, char **args)
 	{
 		if (atoi(args[i]) < 1)
 		{
-			printf("Numeric arguments must be superior to 0");
+			printf("Argument %i must be superior to 0\n", i);
 			return (1);
 		}
 		i++;
@@ -51,7 +51,7 @@ int	parsing(int len, char **args)
 
 	if (len != 8)
 	{
-		printf("Invalid number of arguments");
+		printf("Invalid number of arguments\n");
 		return (1);
 	}
 	i = 0;
@@ -59,14 +59,14 @@ int	parsing(int len, char **args)
 	{
 		if (!is_numeric(args[i]))
 		{
-			printf("Argument %d must be numeric\n", i + 1);
+			printf("Argument %i must be a positive numeric value\n", i + 1);
 			return (1);
 		}
 		i++;
 	}
 	if (strcmp(args[7], "fifo") && strcmp(args[7], "edf"))
 	{
-		printf("Scheduler must be 'fifo' or 'edf'");
+		printf("Scheduler must be 'fifo' or 'edf'\n");
 		return (1);
 	}
 	if (superior_to_zero(len - 1, args))
