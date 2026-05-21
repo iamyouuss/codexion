@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/07 21:01:00 by iam_youuss        #+#    #+#             */
-/*   Updated: 2026/05/20 17:50:33 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/21 10:50:36 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,13 @@ unsigned long	dongles_cooldown(t_coder *coder)
 			cooldown = right - now;
 	}
 	return (cooldown);
+}
+
+void	ft_usleep(t_control *control, unsigned long time_to_wait)
+{
+	unsigned long	end_time;
+
+	end_time = get_current_time() + time_to_wait;
+	while (is_simulation_running(control) && get_current_time() < end_time)
+		usleep(500);
 }

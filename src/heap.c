@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/20 17:41:30 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/20 20:21:02 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/21 11:17:38 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@ static int	is_more_urgent(t_coder *a, t_coder *b)
 		return (1);
 	if (a_deadline == b_deadline)
 	{
+		if (a->number_of_compiles < b->number_of_compiles)
+			return (1);
+		if (a->number_of_compiles > b->number_of_compiles)
+			return (0);
 		if (a->ticket < b->ticket)
 			return (1);
 	}

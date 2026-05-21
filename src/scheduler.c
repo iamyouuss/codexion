@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/20 17:20:58 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/20 20:19:33 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/21 10:56:06 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	fifo_lock_dongles(t_coder *coder)
 	{
 		pthread_mutex_lock(&coder->right_dongle->dongle_lock);
 		pthread_mutex_lock(&coder->left_dongle->dongle_lock);
-		usleep(dongles_cooldown(coder) * 1000);
+		ft_usleep(coder->control, dongles_cooldown(coder));
 		print_action(coder, "has taken a dongle");
 		print_action(coder, "has taken a dongle");
 	}
@@ -26,7 +26,7 @@ void	fifo_lock_dongles(t_coder *coder)
 	{
 		pthread_mutex_lock(&coder->left_dongle->dongle_lock);
 		pthread_mutex_lock(&coder->right_dongle->dongle_lock);
-		usleep(dongles_cooldown(coder) * 1000);
+		ft_usleep(coder->control, dongles_cooldown(coder));
 		print_action(coder, "has taken a dongle");
 		print_action(coder, "has taken a dongle");
 	}
@@ -38,14 +38,14 @@ void	fifo_unlock_dongles(t_coder *coder)
 	pthread_mutex_unlock(&coder->right_dongle->dongle_lock);
 }
 
-static void	dispatch_dongles(t_control *control)
+static void	edf_manage_dongles(t_control *control)
 {
 	int		i;
 	int		wait_list_size;
 	t_coder	*current;
 
 	wait_list_size = 0;
-	while (control->heap.size > 0)
+	while (control->heap.size > 0 && control->is_running)
 	{
 		current = pop_from_heap(&control->heap);
 		if (current->left_dongle->is_available
@@ -73,7 +73,7 @@ void	edf_lock_dongles(t_coder *coder)
 	coder->ticket = coder->control->ticket_counter;
 	coder->control->ticket_counter++;
 	push_to_heap(coder, &coder->control->heap);
-	dispatch_dongles(coder->control);
+	edf_manage_dongles(coder->control);
 	while (!coder->has_dongles && coder->control->is_running)
 		pthread_cond_wait(&coder->control->heap_cond,
 			&coder->control->heap_lock);
@@ -86,6 +86,6 @@ void	edf_unlock_dongles(t_coder *coder)
 	coder->left_dongle->is_available = 1;
 	coder->right_dongle->is_available = 1;
 	coder->has_dongles = 0;
-	dispatch_dongles(coder->control);
+	edf_manage_dongles(coder->control);
 	pthread_mutex_unlock(&coder->control->heap_lock);
 }

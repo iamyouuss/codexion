@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:12:54 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/20 20:17:34 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/21 11:01:12 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ static int	check_burnout(t_control *control)
 			pthread_mutex_lock(&control->run_lock);
 			control->is_running = 0;
 			pthread_mutex_unlock(&control->run_lock);
+			if (control->config->scheduler)
+				pthread_cond_broadcast(&control->heap_cond);
 			pthread_mutex_unlock(&control->coders[i].compile_lock);
 			return (1);
 		}
@@ -80,6 +82,8 @@ void	*monitor(void *data)
 		{
 			pthread_mutex_lock(&control->run_lock);
 			control->is_running = 0;
+			if (control->config->scheduler)
+				pthread_cond_broadcast(&control->heap_cond);
 			pthread_mutex_unlock(&control->run_lock);
 			pthread_mutex_lock(&control->print_lock);
 			printf("%lu All coders have completed their compilations\n",

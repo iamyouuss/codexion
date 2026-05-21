@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:59:04 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/20 20:19:44 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/21 10:51:03 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void			*coder_routine(void *data);
 //dongles cooldown
 void			set_dongles_cooldown(t_coder *coder);
 unsigned long	dongles_cooldown(t_coder *coder);
+void			ft_usleep(t_control *control, unsigned long time_to_wait);
 
 //scheduler
 void			fifo_lock_dongles(t_coder *coder);

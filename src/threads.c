@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:20:28 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/20 20:23:04 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/21 10:55:02 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,13 @@ static int	compile(t_coder *coder)
 		coder->last_compile = get_current_time();
 		pthread_mutex_unlock(&coder->compile_lock);
 		print_action(coder, "is compiling");
-		usleep(coder->control->config->time_to_compile * 1000);
-		pthread_mutex_lock(&coder->compile_lock);
-		coder->number_of_compiles++;
-		pthread_mutex_unlock(&coder->compile_lock);
+		ft_usleep(coder->control, coder->control->config->time_to_compile);
+		if (is_simulation_running(coder->control))
+		{
+			pthread_mutex_lock(&coder->compile_lock);
+			coder->number_of_compiles++;
+			pthread_mutex_unlock(&coder->compile_lock);
+		}
 		set_dongles_cooldown(coder);
 		coder->control->unlock_dongles(coder);
 		return (0);
@@ -42,7 +45,7 @@ static int	debug(t_coder *coder)
 	if (is_simulation_running(coder->control))
 	{
 		print_action(coder, "is debuging");
-		usleep(coder->control->config->time_to_debug * 1000);
+		ft_usleep(coder->control, coder->control->config->time_to_debug);
 		return (0);
 	}
 	return (1);
@@ -53,7 +56,7 @@ static int	refactor(t_coder *coder)
 	if (is_simulation_running(coder->control))
 	{
 		print_action(coder, "is refactoring");
-		usleep(coder->control->config->time_to_refactor * 1000);
+		ft_usleep(coder->control, coder->control->config->time_to_refactor);
 		return (0);
 	}
 	return (1);
@@ -77,7 +80,7 @@ void	*coder_routine(void *data)
 	control = coder->control;
 	if (coder->control->config->number_of_coders == 1)
 	{
-		usleep(coder->control->config->time_to_burnout);
+		usleep(control->config->time_to_burnout);
 		print_action(coder, "burned out !");
 		return (NULL);
 	}
