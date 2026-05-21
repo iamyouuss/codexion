@@ -6,15 +6,22 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 13:12:54 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/21 12:11:22 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/21 13:25:44 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
+void	cond_broadcast(t_control *control)
+{
+	pthread_mutex_lock(&control->heap_lock);
+	pthread_cond_broadcast(&control->heap_cond);
+	pthread_mutex_unlock(&control->heap_lock);
+}
+
 static int	check_burnout(t_control *control)
 {
-	int			i;
+	int	i;
 
 	i = 0;
 	while (i < control->config->number_of_coders)
@@ -28,11 +35,7 @@ static int	check_burnout(t_control *control)
 			control->is_running = 0;
 			pthread_mutex_unlock(&control->run_lock);
 			if (control->config->scheduler)
-            {
-                pthread_mutex_lock(&control->heap_lock); // On prend la clé
-				pthread_cond_broadcast(&control->heap_cond); // On crie
-				pthread_mutex_unlock(&control->heap_lock);
-            }
+				cond_broadcast(control);
 			pthread_mutex_unlock(&control->coders[i].compile_lock);
 			return (1);
 		}
@@ -88,11 +91,7 @@ void	*monitor(void *data)
 			control->is_running = 0;
 			pthread_mutex_unlock(&control->run_lock);
 			if (control->config->scheduler)
-            {
-                pthread_mutex_lock(&control->heap_lock);
-				pthread_cond_broadcast(&control->heap_cond);
-				pthread_mutex_unlock(&control->heap_lock);
-            }
+				cond_broadcast(control);
 			pthread_mutex_lock(&control->print_lock);
 			printf("%lu All coders have completed their compilations\n",
 				get_current_time() - control->start_time);
