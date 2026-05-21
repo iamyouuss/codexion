@@ -128,8 +128,8 @@ Used to prevent active polling (CPU burning) and handle precise wake-ups.
 - [Heap implementation](https://www.geeksforgeeks.org/c/c-program-to-implement-priority-queue/)
 - [Pthread condition](https://www.ibm.com/docs/fr/aix/7.3.0?topic=p-pthread-cond-signal-pthread-cond-broadcast-subroutine)
 #### AI Usage
-- Concepts clarification
-- Debugg
-- Test
-- Readme organization
+- **Concepts clarification**: used to explain complex multithreading concepts using analogies.
+- **Debugging**: used to interpret Valgrind/Helgrind logs.
+- **Testing**: used to generate a comprehensive testing battery (crash tests, starvation tests, and memory leak checks) to ensure project robustness.
+- **Readme organization**: used to structure the documentation and ensure all requirements were met.
 
