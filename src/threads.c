@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 10:20:28 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/21 10:55:02 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/24 17:42:36 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	*coder_routine(void *data)
 	control = coder->control;
 	if (coder->control->config->number_of_coders == 1)
 	{
-		usleep(control->config->time_to_burnout);
+		usleep(control->config->time_to_burnout * 1000);
 		print_action(coder, "burned out !");
 		return (NULL);
 	}

@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/20 17:20:58 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/21 18:54:42 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/24 18:29:33 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ static void	edf_manage_dongles(t_control *control)
 			current->right_dongle->is_available = 0;
 			current->has_dongles = 1;
 			pthread_cond_broadcast(&control->heap_cond);
-			print_action(current, "has taken a dongle");
-			print_action(current, "has taken a dongle");
 			break ;
 		}
 		control->heap.wait_list[wait_list_size] = current;
@@ -69,15 +67,24 @@ static void	edf_manage_dongles(t_control *control)
 
 void	edf_lock_dongles(t_coder *coder)
 {
-	pthread_mutex_lock(&coder->control->heap_lock);
-	coder->ticket = coder->control->ticket_counter;
-	coder->control->ticket_counter++;
-	push_to_heap(coder, &coder->control->heap);
-	edf_manage_dongles(coder->control);
-	while (!coder->has_dongles && coder->control->is_running)
-		pthread_cond_wait(&coder->control->heap_cond,
-			&coder->control->heap_lock);
-	pthread_mutex_unlock(&coder->control->heap_lock);
+	if (coder->control->is_running)
+	{
+		pthread_mutex_lock(&coder->control->heap_lock);
+		coder->ticket = coder->control->ticket_counter;
+		coder->control->ticket_counter++;
+		push_to_heap(coder, &coder->control->heap);
+		edf_manage_dongles(coder->control);
+		while (!coder->has_dongles && coder->control->is_running)
+			pthread_cond_wait(&coder->control->heap_cond,
+				&coder->control->heap_lock);
+		pthread_mutex_unlock(&coder->control->heap_lock);
+		if (coder->control->is_running)
+		{
+			ft_usleep(coder->control, dongles_cooldown(coder));
+			print_action(coder, "has taken a dongle");
+			print_action(coder, "has taken a dongle");
+		}
+	}
 }
 
 void	edf_unlock_dongles(t_coder *coder)
