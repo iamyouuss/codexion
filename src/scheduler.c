@@ -6,7 +6,7 @@
 /*   By: yghergho <yghergho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/20 17:20:58 by yghergho          #+#    #+#             */
-/*   Updated: 2026/05/24 18:29:33 by yghergho         ###   ########.fr       */
+/*   Updated: 2026/05/31 15:21:21 by yghergho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	edf_manage_dongles(t_control *control)
 	t_coder	*current;
 
 	wait_list_size = 0;
-	while (control->heap.size > 0 && control->is_running)
+	while (control->heap.size > 0 && is_simulation_running(control))
 	{
 		current = pop_from_heap(&control->heap);
 		if (current->left_dongle->is_available
@@ -67,18 +67,18 @@ static void	edf_manage_dongles(t_control *control)
 
 void	edf_lock_dongles(t_coder *coder)
 {
-	if (coder->control->is_running)
+	if (is_simulation_running(coder->control))
 	{
 		pthread_mutex_lock(&coder->control->heap_lock);
 		coder->ticket = coder->control->ticket_counter;
 		coder->control->ticket_counter++;
 		push_to_heap(coder, &coder->control->heap);
 		edf_manage_dongles(coder->control);
-		while (!coder->has_dongles && coder->control->is_running)
+		while (!coder->has_dongles && is_simulation_running(coder->control))
 			pthread_cond_wait(&coder->control->heap_cond,
 				&coder->control->heap_lock);
 		pthread_mutex_unlock(&coder->control->heap_lock);
-		if (coder->control->is_running)
+		if (is_simulation_running(coder->control))
 		{
 			ft_usleep(coder->control, dongles_cooldown(coder));
 			print_action(coder, "has taken a dongle");
